@@ -3,6 +3,7 @@ package com.example.demo.service.impl;
 
 import com.example.demo.dto.StackUserDto;
 import com.example.demo.entity.StackUser;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.StackUserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -78,5 +79,42 @@ class StackUserServiceImplTest {
 
         verify(stackUserRepository, never()).save(any());
     }
+    @Test
+    void shouldReturnUserWhenIdExists() {
+        // Arrange
+        StackUser user = StackUser.builder()
+                .id(1L)
+                .username("ali")
+                .email("ali@test.com")
+                .password("123456")
+                .bio("Java Dev")
+                .reputation(10)
+                .build();
 
+        when(stackUserRepository.findById(1L)).thenReturn(Optional.of(user));
+
+        // Act
+        StackUserDto result = stackUserService.getStackUserById(1L);
+
+        // Assert
+        assertThat(result).isNotNull();
+        assertThat(result.getId()).isEqualTo(1L);
+        assertThat(result.getUsername()).isEqualTo("ali");
+
+        verify(stackUserRepository, times(1)).findById(1L);
+    }
+    @Test
+    void shouldThrowExceptionWhenUserIdNotFound() {
+        // Arrange
+        Long userId = 100L;
+        when(stackUserRepository.findById(userId)).thenReturn(Optional.empty());
+
+        // Act + Assert
+        assertThatThrownBy(() -> stackUserService.getStackUserById(userId))
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessage("StackUser not found with id: " + userId);
+
+        verify(stackUserRepository, times(1)).findById(userId);
+    }
+    
 }
