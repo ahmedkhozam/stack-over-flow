@@ -185,5 +185,43 @@ class StackUserServiceImplTest {
         verify(stackUserRepository, times(1)).findById(userId);
         verify(stackUserRepository, never()).save(any());
     }
+    @Test
+    void shouldDeleteExistingUserSuccessfully() {
+        // Arrange
+        Long userId = 1L;
+
+        StackUser existingUser = StackUser.builder()
+                .id(userId)
+                .username("toDelete")
+                .email("delete@test.com")
+                .bio("some bio")
+                .password("123456")
+                .reputation(0)
+                .build();
+
+        when(stackUserRepository.findById(userId)).thenReturn(Optional.of(existingUser));
+        doNothing().when(stackUserRepository).delete(existingUser);
+
+        // Act
+        stackUserService.deleteStackUser(userId);
+
+        // Assert
+        verify(stackUserRepository, times(1)).findById(userId);
+        verify(stackUserRepository, times(1)).delete(existingUser);
+    }
+    @Test
+    void shouldThrowExceptionWhenDeletingNonExistingUser() {
+        // Arrange
+        Long userId = 99L;
+        when(stackUserRepository.findById(userId)).thenReturn(Optional.empty());
+
+        // Act + Assert
+        assertThatThrownBy(() -> stackUserService.deleteStackUser(userId))
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessage("StackUser not found with id: " + userId);
+
+        verify(stackUserRepository, times(1)).findById(userId);
+        verify(stackUserRepository, never()).delete(any());
+    }
 
 }
