@@ -9,6 +9,8 @@ import com.example.demo.service.StackUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.BeanUtils;
+
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -19,6 +21,9 @@ public class StackUserServiceImpl implements StackUserService {
 
     @Override
     public StackUserDto createStackUser(StackUserDto stackUserDto) {
+        if (stackUserRepository.existsByEmail(stackUserDto.getEmail())) {
+            throw new IllegalArgumentException("Email already in use");
+        }
         StackUser stackUser = StackUser.builder()
                 .username(stackUserDto.getUsername())
                 .email(stackUserDto.getEmail())
@@ -27,6 +32,7 @@ public class StackUserServiceImpl implements StackUserService {
                 .build();
 
         StackUser savedStackUser = stackUserRepository.save(stackUser);
+
 
         return mapToDto(savedStackUser);
     }
@@ -61,6 +67,14 @@ public class StackUserServiceImpl implements StackUserService {
                 .orElseThrow(() -> new ResourceNotFoundException("StackUser not found with id: " + userId));
 
         stackUserRepository.delete(stackUser);
+    }
+
+    @Override
+    public List<StackUserDto> getAllStackUsers() {
+        return stackUserRepository.findAll()
+                .stream()
+                .map(this::mapToDto)
+                .toList();
     }
 
 

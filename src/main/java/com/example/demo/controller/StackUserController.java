@@ -5,16 +5,22 @@ import com.example.demo.dto.StackUserDto;
 import com.example.demo.service.StackUserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/users")
-@RequiredArgsConstructor
 public class StackUserController {
 
     private final StackUserService stackUserService;
+
+    public StackUserController(StackUserService stackUserService) {
+        this.stackUserService = stackUserService;
+    }
 
     // Create StackUser
     @PostMapping
@@ -28,6 +34,13 @@ public class StackUserController {
     public ResponseEntity<StackUserDto> getStackUserById(@PathVariable Long id) {
         StackUserDto userDto = stackUserService.getStackUserById(id);
         return ResponseEntity.ok(userDto);
+    }
+
+    // Get all users
+    @GetMapping
+    public ResponseEntity<List<StackUserDto>> getAllStackUsers() {
+        List<StackUserDto> users = stackUserService.getAllStackUsers();
+        return ResponseEntity.ok(users);
     }
 
     // Update StackUser

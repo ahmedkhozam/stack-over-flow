@@ -3,6 +3,8 @@ package com.example.demo.service;
 
 import com.example.demo.dto.StackUserDto;
 
+import java.util.List;
+
 public interface StackUserService {
 
     StackUserDto createStackUser(StackUserDto stackUserDto);
@@ -12,4 +14,7 @@ public interface StackUserService {
     StackUserDto updateStackUser(Long userId, StackUserDto stackUserDto); // ➡️ ميثود التحديث الجديدة
 
     void deleteStackUser(Long userId); // ➡️ ميثود الديليت الجديدة
+
+    List<StackUserDto> getAllStackUsers();
+
 }
