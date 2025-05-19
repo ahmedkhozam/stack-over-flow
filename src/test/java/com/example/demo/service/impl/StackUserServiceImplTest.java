@@ -8,6 +8,7 @@ import com.example.demo.repository.StackUserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
+
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -79,6 +80,7 @@ class StackUserServiceImplTest {
 
         verify(stackUserRepository, never()).save(any());
     }
+
     @Test
     void shouldReturnUserWhenIdExists() {
         // Arrange
@@ -103,6 +105,7 @@ class StackUserServiceImplTest {
 
         verify(stackUserRepository, times(1)).findById(1L);
     }
+
     @Test
     void shouldThrowExceptionWhenUserIdNotFound() {
         // Arrange
@@ -116,5 +119,71 @@ class StackUserServiceImplTest {
 
         verify(stackUserRepository, times(1)).findById(userId);
     }
-    
+    @Test
+    void shouldUpdateStackUserSuccessfully() {
+        // Arrange
+        Long userId = 1L;
+
+        StackUser existingUser = StackUser.builder()
+                .id(userId)
+                .username("oldUser")
+                .email("old@test.com")
+                .bio("old bio")
+                .password("oldpass")
+                .reputation(10)
+                .build();
+
+        StackUserDto updateDto = StackUserDto.builder()
+                .username("newUser")
+                .email("new@test.com")
+                .bio("updated bio")
+                .password("newpass") // مش هيستخدم، بس موجود
+                .build();
+
+        StackUser updatedUser = StackUser.builder()
+                .id(userId)
+                .username("newUser")
+                .email("new@test.com")
+                .bio("updated bio")
+                .password("oldpass") // الباسورد مش بيتغير هنا
+                .reputation(10)
+                .build();
+
+        when(stackUserRepository.findById(userId)).thenReturn(Optional.of(existingUser));
+        when(stackUserRepository.save(any(StackUser.class))).thenReturn(updatedUser);
+
+        // Act
+        StackUserDto result = stackUserService.updateStackUser(userId, updateDto);
+
+        // Assert
+        assertThat(result).isNotNull();
+        assertThat(result.getUsername()).isEqualTo("newUser");
+        assertThat(result.getEmail()).isEqualTo("new@test.com");
+
+        verify(stackUserRepository, times(1)).findById(userId);
+        verify(stackUserRepository, times(1)).save(any(StackUser.class));
+    }
+    @Test
+    void shouldThrowExceptionWhenUpdatingNonExistingUser() {
+        // Arrange
+        Long userId = 100L;
+
+        StackUserDto updateDto = StackUserDto.builder()
+                .username("anyUser")
+                .email("any@test.com")
+                .bio("any bio")
+                .password("123456")
+                .build();
+
+        when(stackUserRepository.findById(userId)).thenReturn(Optional.empty());
+
+        // Act + Assert
+        assertThatThrownBy(() -> stackUserService.updateStackUser(userId, updateDto))
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessage("StackUser not found with id: " + userId);
+
+        verify(stackUserRepository, times(1)).findById(userId);
+        verify(stackUserRepository, never()).save(any());
+    }
+
 }
