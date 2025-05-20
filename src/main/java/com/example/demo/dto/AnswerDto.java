@@ -12,4 +12,7 @@ public class AnswerDto {
     private boolean accepted;
     private Long questionId;
     private Long authorId;
+    private int upvotes;
+    private int downvotes;
+
 }

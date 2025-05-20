@@ -7,6 +7,7 @@ import com.example.demo.entity.StackUser;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.QuestionRepository;
 import com.example.demo.repository.StackUserRepository;
+import com.example.demo.repository.VoteRepository;
 import com.example.demo.security.SecurityUtil;
 import com.example.demo.service.QuestionService;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,8 @@ public class QuestionServiceImpl implements QuestionService {
 
     private final QuestionRepository questionRepository;
     private final StackUserRepository userRepository;
+    private final VoteRepository voteRepository;
+
 
     @Override
     public QuestionDto createQuestion(QuestionDto dto) {
@@ -55,12 +58,18 @@ public class QuestionServiceImpl implements QuestionService {
                 .collect(Collectors.toList());
     }
 
+
     private QuestionDto mapToDto(Question question) {
         QuestionDto dto = new QuestionDto();
         BeanUtils.copyProperties(question, dto);
         dto.setAuthorId(question.getAuthor().getId());
+
+        dto.setUpvotes(voteRepository.countByQuestionIdAndValue(question.getId(), 1));
+        dto.setDownvotes(voteRepository.countByQuestionIdAndValue(question.getId(), -1));
+
         return dto;
     }
+
 
     @Override
     public QuestionDto updateQuestion(Long id, QuestionDto dto) {

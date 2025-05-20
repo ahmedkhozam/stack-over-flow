@@ -9,6 +9,7 @@ import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.AnswerRepository;
 import com.example.demo.repository.QuestionRepository;
 import com.example.demo.repository.StackUserRepository;
+import com.example.demo.repository.VoteRepository;
 import com.example.demo.security.SecurityUtil;
 import com.example.demo.service.AnswerService;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,8 @@ public class AnswerServiceImpl implements AnswerService {
     private final AnswerRepository answerRepository;
     private final QuestionRepository questionRepository;
     private final StackUserRepository userRepository;
+    private final VoteRepository voteRepository;
+
 
     @Override
     public AnswerDto addAnswer(Long questionId, AnswerDto dto) {
@@ -55,13 +58,19 @@ public class AnswerServiceImpl implements AnswerService {
                 .collect(Collectors.toList());
     }
 
+
     private AnswerDto mapToDto(Answer answer) {
         AnswerDto dto = new AnswerDto();
         BeanUtils.copyProperties(answer, dto);
         dto.setAuthorId(answer.getAuthor().getId());
         dto.setQuestionId(answer.getQuestion().getId());
+
+        dto.setUpvotes(voteRepository.countByAnswerIdAndValue(answer.getId(), 1));
+        dto.setDownvotes(voteRepository.countByAnswerIdAndValue(answer.getId(), -1));
+
         return dto;
     }
+
     @Override
     public AnswerDto updateAnswer(Long id, AnswerDto dto) {
         Answer answer = answerRepository.findById(id)
