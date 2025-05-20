@@ -198,7 +198,7 @@ class QuestionServiceImplTest {
                 .author(user)
                 .build();
 
-        User userDetails=new User("user@test.com","123456",List.of());
+        User userDetails=new User("test@a.com","123456",List.of());
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities()));
 
         when(questionRepository.findById(1L)).thenReturn(Optional.of(question));
