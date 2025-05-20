@@ -43,19 +43,9 @@ class QuestionServiceImplTest {
         dto.setContent("Test Content");
         dto.setAuthorId(1L);
 
-        StackUser user = StackUser.builder()
-                .id(1L)
-                .username("ahmed")
-                .email("ahmed@gmail.com")
-                .build();
+        StackUser user = StackUser.builder().id(1L).username("ahmed").email("ahmed@gmail.com").build();
 
-        Question savedQuestion = Question.builder()
-                .id(10L)
-                .title("Test Title")
-                .content("Test Content")
-                .author(user)
-                .createdAt(LocalDateTime.now())
-                .build();
+        Question savedQuestion = Question.builder().id(10L).title("Test Title").content("Test Content").author(user).createdAt(LocalDateTime.now()).build();
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(questionRepository.save(any(Question.class))).thenReturn(savedQuestion);
@@ -71,6 +61,7 @@ class QuestionServiceImplTest {
         verify(userRepository, times(1)).findById(1L);
         verify(questionRepository, times(1)).save(any(Question.class));
     }
+
     @Test
     void shouldThrowWhenUserNotFoundWhileCreatingQuestion() {
         // Arrange
@@ -82,24 +73,17 @@ class QuestionServiceImplTest {
         when(userRepository.findById(999L)).thenReturn(Optional.empty());
 
         // Assert
-        assertThatThrownBy(() -> questionService.createQuestion(dto))
-                .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("User not found");
+        assertThatThrownBy(() -> questionService.createQuestion(dto)).isInstanceOf(ResourceNotFoundException.class).hasMessage("User not found");
 
         verify(userRepository).findById(999L);
         verify(questionRepository, never()).save(any());
     }
+
     @Test
     void shouldReturnQuestionById() {
         // Arrange
         StackUser user = StackUser.builder().id(1L).email("test@email.com").build();
-        Question question = Question.builder()
-                .id(5L)
-                .title("Spring?")
-                .content("Explain spring")
-                .author(user)
-                .createdAt(LocalDateTime.now())
-                .build();
+        Question question = Question.builder().id(5L).title("Spring?").content("Explain spring").author(user).createdAt(LocalDateTime.now()).build();
 
         when(questionRepository.findById(5L)).thenReturn(Optional.of(question));
 
@@ -111,21 +95,18 @@ class QuestionServiceImplTest {
         assertThat(result.getId()).isEqualTo(5L);
         assertThat(result.getTitle()).isEqualTo("Spring?");
     }
+
     @Test
     void shouldThrowWhenQuestionNotFoundById() {
         when(questionRepository.findById(100L)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> questionService.getQuestionById(100L))
-                .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("Question not found");
+        assertThatThrownBy(() -> questionService.getQuestionById(100L)).isInstanceOf(ResourceNotFoundException.class).hasMessage("Question not found");
     }
+
     @Test
     void shouldReturnAllQuestions() {
         StackUser user = StackUser.builder().id(1L).email("a@test.com").build();
-        List<Question> questions = List.of(
-                Question.builder().id(1L).title("Q1").content("C1").author(user).createdAt(LocalDateTime.now()).build(),
-                Question.builder().id(2L).title("Q2").content("C2").author(user).createdAt(LocalDateTime.now()).build()
-        );
+        List<Question> questions = List.of(Question.builder().id(1L).title("Q1").content("C1").author(user).createdAt(LocalDateTime.now()).build(), Question.builder().id(2L).title("Q2").content("C2").author(user).createdAt(LocalDateTime.now()).build());
 
         when(questionRepository.findAll()).thenReturn(questions);
 
@@ -133,31 +114,22 @@ class QuestionServiceImplTest {
 
         assertThat(result).hasSize(2);
     }
+
     @Test
     void shouldUpdateQuestionSuccessfully() {
         // Arrange
         StackUser user = StackUser.builder().id(1L).email("user@test.com").build();
 
-        Question existing = Question.builder()
-                .id(1L)
-                .title("Old Title")
-                .content("Old Content")
-                .author(user)
-                .build();
+        Question existing = Question.builder().id(1L).title("Old Title").content("Old Content").author(user).build();
 
-        Question updated = Question.builder()
-                .id(1L)
-                .title("New Title")
-                .content("New Content")
-                .author(user)
-                .build();
+        Question updated = Question.builder().id(1L).title("New Title").content("New Content").author(user).build();
 
         QuestionDto dto = new QuestionDto();
         dto.setTitle("New Title");
         dto.setContent("New Content");
 
-        User userDetails=new User("user@test.com","123456",List.of());
-        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities()));
+        User userDetails = new User("user@test.com", "123456", List.of());
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities()));
 
         when(questionRepository.findById(1L)).thenReturn(Optional.of(existing));
         when(questionRepository.save(existing)).thenReturn(updated);
@@ -169,21 +141,20 @@ class QuestionServiceImplTest {
         assertThat(result.getTitle()).isEqualTo("New Title");
         assertThat(result.getContent()).isEqualTo("New Content");
     }
+
     @Test
     void shouldThrowWhenUpdatingNonExistingQuestion() {
         // Arrange
         QuestionDto dto = new QuestionDto();
         dto.setTitle("Any");
         dto.setContent("Any");
-        User userDetails=new User("user@test.com","123456",List.of());
-        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities()));
+        User userDetails = new User("user@test.com", "123456", List.of());
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities()));
 
         when(questionRepository.findById(99L)).thenReturn(Optional.empty());
 
         // Assert
-        assertThatThrownBy(() -> questionService.updateQuestion(99L, dto))
-                .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("Question not found");
+        assertThatThrownBy(() -> questionService.updateQuestion(99L, dto)).isInstanceOf(ResourceNotFoundException.class).hasMessage("Question not found");
     }
 
     @Test
@@ -191,15 +162,10 @@ class QuestionServiceImplTest {
         // Arrange
         StackUser user = StackUser.builder().id(1L).email("test@a.com").build();
 
-        Question question = Question.builder()
-                .id(1L)
-                .title("Title")
-                .content("Content")
-                .author(user)
-                .build();
+        Question question = Question.builder().id(1L).title("Title").content("Content").author(user).build();
 
-        User userDetails=new User("test@a.com","123456",List.of());
-        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities()));
+        User userDetails = new User("test@a.com", "123456", List.of());
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities()));
 
         when(questionRepository.findById(1L)).thenReturn(Optional.of(question));
         doNothing().when(questionRepository).delete(question);
@@ -210,13 +176,12 @@ class QuestionServiceImplTest {
         // Assert
         verify(questionRepository, times(1)).delete(question);
     }
+
     @Test
     void shouldThrowWhenDeletingNonExistingQuestion() {
         when(questionRepository.findById(100L)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> questionService.deleteQuestion(100L))
-                .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("Question not found");
+        assertThatThrownBy(() -> questionService.deleteQuestion(100L)).isInstanceOf(ResourceNotFoundException.class).hasMessage("Question not found");
 
         verify(questionRepository, never()).delete(any());
     }

@@ -31,21 +31,9 @@ class StackUserServiceImplTest {
     @Test
     void shouldCreateStackUserSuccessfully() {
         // Arrange
-        StackUserDto dto = StackUserDto.builder()
-                .username("ahmed")
-                .email("ahmed@test.com")
-                .password("123456")
-                .bio("Java Dev")
-                .build();
+        StackUserDto dto = StackUserDto.builder().username("ahmed").email("ahmed@test.com").password("123456").bio("Java Dev").build();
 
-        StackUser saved = StackUser.builder()
-                .id(1L)
-                .username(dto.getUsername())
-                .email(dto.getEmail())
-                .password(dto.getPassword())
-                .bio(dto.getBio())
-                .reputation(0)
-                .build();
+        StackUser saved = StackUser.builder().id(1L).username(dto.getUsername()).email(dto.getEmail()).password(dto.getPassword()).bio(dto.getBio()).reputation(0).build();
 
         when(stackUserRepository.save(any(StackUser.class))).thenReturn(saved);
 
@@ -63,20 +51,13 @@ class StackUserServiceImplTest {
     @Test
     void shouldThrowExceptionWhenEmailAlreadyExists() {
         // Arrange
-        StackUserDto dto = StackUserDto.builder()
-                .username("ali")
-                .email("ali@test.com")
-                .password("123456")
-                .bio("Dev")
-                .build();
+        StackUserDto dto = StackUserDto.builder().username("ali").email("ali@test.com").password("123456").bio("Dev").build();
 
         // نخلي الريبو يرجع true لما ننده عليه بـ existsByEmail
         when(stackUserRepository.existsByEmail(dto.getEmail())).thenReturn(true);
 
         // Act + Assert
-        assertThatThrownBy(() -> stackUserService.createStackUser(dto))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Email already in use");
+        assertThatThrownBy(() -> stackUserService.createStackUser(dto)).isInstanceOf(IllegalArgumentException.class).hasMessage("Email already in use");
 
         verify(stackUserRepository, never()).save(any());
     }
@@ -84,14 +65,7 @@ class StackUserServiceImplTest {
     @Test
     void shouldReturnUserWhenIdExists() {
         // Arrange
-        StackUser user = StackUser.builder()
-                .id(1L)
-                .username("ali")
-                .email("ali@test.com")
-                .password("123456")
-                .bio("Java Dev")
-                .reputation(10)
-                .build();
+        StackUser user = StackUser.builder().id(1L).username("ali").email("ali@test.com").password("123456").bio("Java Dev").reputation(10).build();
 
         when(stackUserRepository.findById(1L)).thenReturn(Optional.of(user));
 
@@ -113,41 +87,23 @@ class StackUserServiceImplTest {
         when(stackUserRepository.findById(userId)).thenReturn(Optional.empty());
 
         // Act + Assert
-        assertThatThrownBy(() -> stackUserService.getStackUserById(userId))
-                .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("StackUser not found with id: " + userId);
+        assertThatThrownBy(() -> stackUserService.getStackUserById(userId)).isInstanceOf(ResourceNotFoundException.class).hasMessage("StackUser not found with id: " + userId);
 
         verify(stackUserRepository, times(1)).findById(userId);
     }
+
     @Test
     void shouldUpdateStackUserSuccessfully() {
         // Arrange
         Long userId = 1L;
 
-        StackUser existingUser = StackUser.builder()
-                .id(userId)
-                .username("oldUser")
-                .email("old@test.com")
-                .bio("old bio")
-                .password("oldpass")
-                .reputation(10)
+        StackUser existingUser = StackUser.builder().id(userId).username("oldUser").email("old@test.com").bio("old bio").password("oldpass").reputation(10).build();
+
+        StackUserDto updateDto = StackUserDto.builder().username("newUser").email("new@test.com").bio("updated bio").password("newpass") // مش هيستخدم، بس موجود
                 .build();
 
-        StackUserDto updateDto = StackUserDto.builder()
-                .username("newUser")
-                .email("new@test.com")
-                .bio("updated bio")
-                .password("newpass") // مش هيستخدم، بس موجود
-                .build();
-
-        StackUser updatedUser = StackUser.builder()
-                .id(userId)
-                .username("newUser")
-                .email("new@test.com")
-                .bio("updated bio")
-                .password("oldpass") // الباسورد مش بيتغير هنا
-                .reputation(10)
-                .build();
+        StackUser updatedUser = StackUser.builder().id(userId).username("newUser").email("new@test.com").bio("updated bio").password("oldpass") // الباسورد مش بيتغير هنا
+                .reputation(10).build();
 
         when(stackUserRepository.findById(userId)).thenReturn(Optional.of(existingUser));
         when(stackUserRepository.save(any(StackUser.class))).thenReturn(updatedUser);
@@ -163,41 +119,29 @@ class StackUserServiceImplTest {
         verify(stackUserRepository, times(1)).findById(userId);
         verify(stackUserRepository, times(1)).save(any(StackUser.class));
     }
+
     @Test
     void shouldThrowExceptionWhenUpdatingNonExistingUser() {
         // Arrange
         Long userId = 100L;
 
-        StackUserDto updateDto = StackUserDto.builder()
-                .username("anyUser")
-                .email("any@test.com")
-                .bio("any bio")
-                .password("123456")
-                .build();
+        StackUserDto updateDto = StackUserDto.builder().username("anyUser").email("any@test.com").bio("any bio").password("123456").build();
 
         when(stackUserRepository.findById(userId)).thenReturn(Optional.empty());
 
         // Act + Assert
-        assertThatThrownBy(() -> stackUserService.updateStackUser(userId, updateDto))
-                .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("StackUser not found with id: " + userId);
+        assertThatThrownBy(() -> stackUserService.updateStackUser(userId, updateDto)).isInstanceOf(ResourceNotFoundException.class).hasMessage("StackUser not found with id: " + userId);
 
         verify(stackUserRepository, times(1)).findById(userId);
         verify(stackUserRepository, never()).save(any());
     }
+
     @Test
     void shouldDeleteExistingUserSuccessfully() {
         // Arrange
         Long userId = 1L;
 
-        StackUser existingUser = StackUser.builder()
-                .id(userId)
-                .username("toDelete")
-                .email("delete@test.com")
-                .bio("some bio")
-                .password("123456")
-                .reputation(0)
-                .build();
+        StackUser existingUser = StackUser.builder().id(userId).username("toDelete").email("delete@test.com").bio("some bio").password("123456").reputation(0).build();
 
         when(stackUserRepository.findById(userId)).thenReturn(Optional.of(existingUser));
         doNothing().when(stackUserRepository).delete(existingUser);
@@ -209,6 +153,7 @@ class StackUserServiceImplTest {
         verify(stackUserRepository, times(1)).findById(userId);
         verify(stackUserRepository, times(1)).delete(existingUser);
     }
+
     @Test
     void shouldThrowExceptionWhenDeletingNonExistingUser() {
         // Arrange
@@ -216,9 +161,7 @@ class StackUserServiceImplTest {
         when(stackUserRepository.findById(userId)).thenReturn(Optional.empty());
 
         // Act + Assert
-        assertThatThrownBy(() -> stackUserService.deleteStackUser(userId))
-                .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("StackUser not found with id: " + userId);
+        assertThatThrownBy(() -> stackUserService.deleteStackUser(userId)).isInstanceOf(ResourceNotFoundException.class).hasMessage("StackUser not found with id: " + userId);
 
         verify(stackUserRepository, times(1)).findById(userId);
         verify(stackUserRepository, never()).delete(any());
