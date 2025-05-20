@@ -9,9 +9,11 @@ import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.AnswerRepository;
 import com.example.demo.repository.QuestionRepository;
 import com.example.demo.repository.StackUserRepository;
+import com.example.demo.security.SecurityUtil;
 import com.example.demo.service.AnswerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -64,6 +66,11 @@ public class AnswerServiceImpl implements AnswerService {
     public AnswerDto updateAnswer(Long id, AnswerDto dto) {
         Answer answer = answerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Answer not found"));
+        String currentEmail = SecurityUtil.getCurrentUserEmail();
+
+        if (!answer.getAuthor().getEmail().equals(currentEmail)) {
+            throw new AccessDeniedException("You are not allowed to modify this answer");
+        }
 
         answer.setContent(dto.getContent());
         return mapToDto(answerRepository.save(answer));
@@ -73,6 +80,12 @@ public class AnswerServiceImpl implements AnswerService {
     public void deleteAnswer(Long id) {
         Answer answer = answerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Answer not found"));
+        String currentEmail = SecurityUtil.getCurrentUserEmail();
+
+        if (!answer.getAuthor().getEmail().equals(currentEmail)) {
+            throw new AccessDeniedException("You are not allowed to modify this answer");
+        }
+
         answerRepository.delete(answer);
     }
 

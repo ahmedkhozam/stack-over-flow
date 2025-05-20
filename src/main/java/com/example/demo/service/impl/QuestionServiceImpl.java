@@ -7,9 +7,11 @@ import com.example.demo.entity.StackUser;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.QuestionRepository;
 import com.example.demo.repository.StackUserRepository;
+import com.example.demo.security.SecurityUtil;
 import com.example.demo.service.QuestionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -59,10 +61,18 @@ public class QuestionServiceImpl implements QuestionService {
         dto.setAuthorId(question.getAuthor().getId());
         return dto;
     }
+
     @Override
     public QuestionDto updateQuestion(Long id, QuestionDto dto) {
+        String currentEmail = SecurityUtil.getCurrentUserEmail();
+
+
         Question question = questionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Question not found"));
+
+        if (!question.getAuthor().getEmail().equals(currentEmail)) {
+            throw new AccessDeniedException("You are not allowed to modify this question");
+        }
 
         question.setTitle(dto.getTitle());
         question.setContent(dto.getContent());
@@ -74,6 +84,12 @@ public class QuestionServiceImpl implements QuestionService {
     public void deleteQuestion(Long id) {
         Question question = questionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Question not found"));
+        String currentEmail = SecurityUtil.getCurrentUserEmail();
+
+        if (!question.getAuthor().getEmail().equals(currentEmail)) {
+            throw new AccessDeniedException("You are not allowed to modify this question");
+        }
+
         questionRepository.delete(question);
     }
 
