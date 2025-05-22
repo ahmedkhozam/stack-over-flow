@@ -27,4 +27,7 @@ public class StackUserDto {
     private String password;
 
     private String bio;
+
+    private int reputation;
+
 }

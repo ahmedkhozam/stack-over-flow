@@ -6,6 +6,7 @@ import com.example.demo.entity.StackUser;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.QuestionRepository;
 import com.example.demo.repository.StackUserRepository;
+import com.example.demo.repository.VoteRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
@@ -29,6 +30,10 @@ class QuestionServiceImplTest {
 
     @Mock
     private StackUserRepository userRepository;
+
+    @Mock
+    private VoteRepository voteRepository;
+
 
     @BeforeEach
     void setUp() {

@@ -27,5 +27,7 @@ public class StackUser {
 
     private String bio;
 
+    @Column(nullable = false)
     private int reputation = 0;
+
 }

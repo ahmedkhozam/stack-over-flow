@@ -5,10 +5,12 @@ import com.example.demo.dto.AuthResponse;
 import com.example.demo.dto.LoginRequest;
 import com.example.demo.dto.RegisterRequest;
 import com.example.demo.entity.StackUser;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.StackUserRepository;
 import com.example.demo.security.JwtService;
 import com.example.demo.security.StackUserDetailsService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,6 +29,9 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final StackUserDetailsService userDetailsService;
     private final JwtService jwtService;
+    @Autowired
+   private final StackUserRepository stackUserRepository;
+
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@Valid @RequestBody RegisterRequest request) {
@@ -55,9 +60,9 @@ public class AuthController {
         // جلب بيانات اليوزر
         UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
 
-        // إصدار JWT
+        StackUser user = stackUserRepository.findByEmail(request.getEmail()).orElseThrow(()->new ResourceNotFoundException("Email doesn't exist"));
         String token = jwtService.generateToken(userDetails);
+        return ResponseEntity.ok(new AuthResponse(token, "Login successful", user.getReputation()));
 
-        return ResponseEntity.ok(new AuthResponse(token, "Login successful"));
     }
 }
