@@ -10,5 +10,7 @@ public interface AnswerService {
     List<AnswerDto> getAnswersByQuestionId(Long questionId);
     AnswerDto updateAnswer(Long id, AnswerDto dto);
     void deleteAnswer(Long id);
+    void acceptAnswer(Long answerId);
+
 
 }

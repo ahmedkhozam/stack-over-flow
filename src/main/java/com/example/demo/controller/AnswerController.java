@@ -42,5 +42,10 @@ public class AnswerController {
         answerService.deleteAnswer(id);
         return ResponseEntity.noContent().build();
     }
+    @PutMapping("/{id}/accept")
+    public ResponseEntity<String> acceptAnswer(@PathVariable Long id) {
+        answerService.acceptAnswer(id);
+        return ResponseEntity.ok("Answer marked as accepted");
+    }
 
 }

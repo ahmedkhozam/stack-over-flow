@@ -98,4 +98,38 @@ public class AnswerServiceImpl implements AnswerService {
         answerRepository.delete(answer);
     }
 
+    @Override
+    public void acceptAnswer(Long answerId) {
+        Answer answer = answerRepository.findById(answerId)
+                .orElseThrow(() -> new ResourceNotFoundException("Answer not found"));
+
+        StackUser currentUser = getCurrentUser();
+
+        if (!answer.getQuestion().getAuthor().getEmail().equals(currentUser.getEmail())) {
+            throw new AccessDeniedException("Only the question owner can accept an answer");
+        }
+
+        // لو فيه إجابة مقبولة قبل كده نشيل القبول منها
+        answerRepository.findByQuestionIdAndAcceptedTrue(answer.getQuestion().getId())
+                .ifPresent(existing -> {
+                    existing.setAccepted(false);
+                    answerRepository.save(existing);
+                });
+
+        answer.setAccepted(true);
+        answerRepository.save(answer);
+
+        // نضيف 15 نقطة لصاحب الإجابة
+        StackUser answerOwner = answer.getAuthor();
+        answerOwner.setReputation(answerOwner.getReputation() + 15);
+        userRepository.save(answerOwner);
+    }
+
+    private StackUser getCurrentUser() {
+        String email = SecurityUtil.getCurrentUserEmail();
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    }
+
+
 }

@@ -22,6 +22,7 @@ public class Answer {
 
     private LocalDateTime createdAt;
 
+    @Column(nullable = false)
     private boolean accepted = false;
 
     @ManyToOne

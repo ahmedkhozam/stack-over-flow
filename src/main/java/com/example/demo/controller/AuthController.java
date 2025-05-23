@@ -9,6 +9,7 @@ import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.StackUserRepository;
 import com.example.demo.security.JwtService;
 import com.example.demo.security.StackUserDetailsService;
+import com.example.demo.service.AnswerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +32,8 @@ public class AuthController {
     private final JwtService jwtService;
     @Autowired
    private final StackUserRepository stackUserRepository;
+    @Autowired
+    private AnswerService answerService;
 
 
     @PostMapping("/register")
@@ -65,4 +68,7 @@ public class AuthController {
         return ResponseEntity.ok(new AuthResponse(token, "Login successful", user.getReputation()));
 
     }
+
+
+
 }
