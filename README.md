@@ -70,11 +70,7 @@ Here are the main classes of Stack Overflow System:
 * **Account:** We will have four types of accounts in the system, guest, member, admin, and moderator. Guests can search and view questions. Members can ask questions and earn reputation by answering questions and from bounties.
 * **Notification:** This class will be responsible for sending notifications to members and assigning badges to members based on their reputations.
 
-<p align="center">
-    <img src="/media-files/stack-overflow-class-diagram.svg" alt="Stack Overflow Class Diagram">
-    <br />
-    Class Diagram for Stack Overflow
-</p>
+![Image](https://github.com/user-attachments/assets/f366206b-72f7-4de5-9e05-fb2fce8f8285)
 
 <p align="center">
     <img src="/media-files/stack-overflow-uml.svg" alt="Stack Overflow UML">
