@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 
 import com.example.demo.dto.StackUserDto;
+import com.example.demo.dto.UserProfileDto;
 import com.example.demo.service.StackUserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -56,5 +57,11 @@ public class StackUserController {
         stackUserService.deleteStackUser(id);
         return ResponseEntity.ok("StackUser deleted successfully!");
     }
+
+    @GetMapping("/profile")
+    public ResponseEntity<UserProfileDto> getProfile() {
+        return ResponseEntity.ok(stackUserService.getCurrentUserProfile());
+    }
+
 
 }

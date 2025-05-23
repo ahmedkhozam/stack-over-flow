@@ -9,5 +9,7 @@ import java.util.Optional;
 public interface AnswerRepository extends JpaRepository<Answer, Long> {
     List<Answer> findByQuestionId(Long questionId);
     Optional<Answer> findByQuestionIdAndAcceptedTrue(Long questionId);
+    List<Answer> findByAuthorId(Long authorId);
+
 
 }
