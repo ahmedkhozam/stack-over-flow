@@ -72,11 +72,7 @@ Here are the main classes of Stack Overflow System:
 
 ![Image](https://github.com/user-attachments/assets/f366206b-72f7-4de5-9e05-fb2fce8f8285)
 
-<p align="center">
-    <img src="/media-files/stack-overflow-uml.svg" alt="Stack Overflow UML">
-    <br />
-    UML for Stack Overflow
-</p>
+![Image](https://github.com/user-attachments/assets/1b7a03a6-bed4-4bf8-98d6-9445b3d9a100)
 
 ### Activity Diagram
 
