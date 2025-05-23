@@ -33,7 +33,6 @@ public class AnswerServiceImpl implements AnswerService {
     private final NotificationService notificationService;
 
 
-
     @Override
     public AnswerDto addAnswer(Long questionId, AnswerDto dto) {
         Question question = questionRepository.findById(questionId)
@@ -104,7 +103,7 @@ public class AnswerServiceImpl implements AnswerService {
         String currentEmail = SecurityUtil.getCurrentUserEmail();
 
         if (!answer.getAuthor().getEmail().equals(currentEmail)) {
-            throw new AccessDeniedException("You are not allowed to modify this answer");
+            throw new AccessDeniedException("You are not allowed to delete this answer");
         }
 
         answerRepository.delete(answer);
@@ -135,6 +134,14 @@ public class AnswerServiceImpl implements AnswerService {
         StackUser answerOwner = answer.getAuthor();
         answerOwner.setReputation(answerOwner.getReputation() + 15);
         userRepository.save(answerOwner);
+
+        //  إشعار لصاحب الإجابة المقبولة
+        notificationService.notifyUser(
+                answerOwner.getId(),
+                "تم قبول إجابتك كسؤال محلول ",
+                answer.getQuestion().getId(),
+                answer.getId()
+        );
     }
 
     private StackUser getCurrentUser() {
