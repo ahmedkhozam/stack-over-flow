@@ -13,6 +13,7 @@ import com.example.demo.repository.QuestionRepository;
 import com.example.demo.repository.StackUserRepository;
 import com.example.demo.security.SecurityUtil;
 import com.example.demo.service.CommentService;
+import com.example.demo.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,7 @@ public class CommentServiceImpl implements CommentService {
     private final StackUserRepository userRepository;
     private final QuestionRepository questionRepository;
     private final AnswerRepository answerRepository;
+    private final NotificationService notificationService;
 
     @Override
     public CommentDto addCommentToQuestion(Long questionId, CommentDto dto) {
@@ -43,7 +45,17 @@ public class CommentServiceImpl implements CommentService {
                 .question(question)
                 .build();
 
-        return mapToDto(commentRepository.save(comment));
+        Comment saved = commentRepository.save(comment);
+
+        notificationService.notifyUser(
+                question.getAuthor().getId(),
+                currentUser.getUsername() + " علّق على سؤالك",
+                question.getId(),
+                null
+        );
+
+        return mapToDto(saved);
+
     }
 
     @Override
@@ -59,8 +71,16 @@ public class CommentServiceImpl implements CommentService {
                 .answer(answer)
                 .build();
 
-        return mapToDto(commentRepository.save(comment));
-    }
+        Comment saved = commentRepository.save(comment);
+
+        notificationService.notifyUser(
+                answer.getAuthor().getId(),
+                currentUser.getUsername() + " علّق على اجابتك",
+                answer.getQuestion().getId(),
+                answer.getId()
+        );
+
+        return mapToDto(saved);    }
 
     @Override
     public List<CommentDto> getCommentsForQuestion(Long questionId) {
