@@ -84,7 +84,6 @@ Here are the main classes of Stack Overflow System:
 
 Following is the sequence diagram for creating a new question:
 
-![Image](https://github.com/user-attachments/assets/e06a3c2b-cf89-45d9-b7ca-e4a6c3184b4a)
-
+![Image](https://github.com/user-attachments/assets/e7614a92-4ca1-4c83-94db-3f8ec8e4fe59)
 
 ```
