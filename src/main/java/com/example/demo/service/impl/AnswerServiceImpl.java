@@ -12,6 +12,7 @@ import com.example.demo.repository.StackUserRepository;
 import com.example.demo.repository.VoteRepository;
 import com.example.demo.security.SecurityUtil;
 import com.example.demo.service.AnswerService;
+import com.example.demo.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.access.AccessDeniedException;
@@ -29,6 +30,8 @@ public class AnswerServiceImpl implements AnswerService {
     private final QuestionRepository questionRepository;
     private final StackUserRepository userRepository;
     private final VoteRepository voteRepository;
+    private final NotificationService notificationService;
+
 
 
     @Override
@@ -46,8 +49,17 @@ public class AnswerServiceImpl implements AnswerService {
                 .question(question)
                 .author(author)
                 .build();
+        Answer saved = answerRepository.save(answer);
 
-        return mapToDto(answerRepository.save(answer));
+        notificationService.notifyUser(
+                question.getAuthor().getId(),
+                author.getUsername() + " أجاب على سؤالك",
+                question.getId(),
+                null
+        );
+
+        return mapToDto(saved);
+
     }
 
     @Override
