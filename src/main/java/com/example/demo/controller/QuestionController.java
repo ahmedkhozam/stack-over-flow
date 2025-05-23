@@ -1,9 +1,12 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.QuestionDto;
+import com.example.demo.dto.QuestionRequest;
+import com.example.demo.dto.QuestionResponse;
 import com.example.demo.service.QuestionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,29 +19,26 @@ public class QuestionController {
 
     private final QuestionService questionService;
 
-    // إضافة سؤال جديد
     @PostMapping
-    public ResponseEntity<QuestionDto> createQuestion(@Valid @RequestBody QuestionDto dto) {
-        QuestionDto created = questionService.createQuestion(dto);
-        return ResponseEntity.ok(created);
+    public ResponseEntity<QuestionResponse> addQuestion(@RequestBody @Valid QuestionRequest request) {
+        QuestionResponse response = questionService.createQuestion(request);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    // عرض سؤال حسب الـ ID
     @GetMapping("/{id}")
-    public ResponseEntity<QuestionDto> getQuestionById(@PathVariable Long id) {
-        return ResponseEntity.ok(questionService.getQuestionById(id));
+    public ResponseEntity<QuestionResponse> getQuestion(@PathVariable Long id) {
+        QuestionResponse response = questionService.getQuestionById(id);
+        return ResponseEntity.ok(response);
     }
 
-    // عرض كل الأسئلة
     @GetMapping
-    public ResponseEntity<List<QuestionDto>> getAllQuestions() {
+    public ResponseEntity<List<QuestionResponse>> getAllQuestions() {
         return ResponseEntity.ok(questionService.getAllQuestions());
     }
-
     // تعديل سؤال
     @PutMapping("/{id}")
-    public ResponseEntity<QuestionDto> updateQuestion(@PathVariable Long id,
-                                                      @Valid @RequestBody QuestionDto dto) {
+    public ResponseEntity<QuestionResponse> updateQuestion(@PathVariable Long id,
+                                                      @Valid @RequestBody QuestionRequest dto) {
         return ResponseEntity.ok(questionService.updateQuestion(id, dto));
     }
 
