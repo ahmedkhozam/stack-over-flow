@@ -78,11 +78,7 @@ Here are the main classes of Stack Overflow System:
 
 **Post a new question:** Any member or moderator can perform this activity. Here are the steps to post a question:
 
-<p align="center">
-    <img src="/media-files/stack-overflow-activity-diagram.svg" alt="Stack Overflow Activity Diagram">
-    <br />
-    Activity Diagram for Stack Overflow
-</p>
+![Image](https://github.com/user-attachments/assets/e06a3c2b-cf89-45d9-b7ca-e4a6c3184b4a)
 
 ### Sequence Diagram
 
