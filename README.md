@@ -84,11 +84,7 @@ Here are the main classes of Stack Overflow System:
 
 Following is the sequence diagram for creating a new question:
 
-<p align="center">
-    <img src="/media-files/stack-overflow-sequence-diagram.svg" alt="Stack Overflow Sequence Diagram">
-    <br />
-    Sequence Diagram for Stack Overflow
-</p>
+![Image](https://github.com/user-attachments/assets/e06a3c2b-cf89-45d9-b7ca-e4a6c3184b4a)
 
 
 ```
