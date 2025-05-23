@@ -14,11 +14,8 @@ Stack Overflow is one of the largest online communities for developers to learn 
 
 Users of Stack Overflow can earn reputation points and badges. For example, a person is awarded ten reputation points for receiving an “up” vote on an answer and five points for the “up” vote of a question. The can also receive badges for their valued contributions. A higher reputation lets users unlock new privileges like the ability to vote, comment on, and even edit other people’s posts.
 
-
     ![Image](https://github.com/user-attachments/assets/7e71da4d-601d-40f8-8a46-23c820effb2f)
-
     Stack Overflow - Online Community for Developers
-</p>
 
 ### System Requirements
 
