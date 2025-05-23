@@ -53,10 +53,8 @@ Here are the top use cases for Stack Overflow:
 
 Here is the use case diagram of Stack Overflow:
 
-<p align="center">
-![Image](https://github.com/user-attachments/assets/f1718bc3-e6e6-44bc-a0a5-beb7ba61ffaf)    <br />
+![Image](https://github.com/user-attachments/assets/f1718bc3-e6e6-44bc-a0a5-beb7ba61ffaf)
     Use Case Diagram for Stack Overflow
-</p>
 
 ### Class Diagram
 
