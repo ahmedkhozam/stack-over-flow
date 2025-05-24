@@ -11,6 +11,7 @@ import com.example.demo.repository.QuestionRepository;
 import com.example.demo.repository.StackUserRepository;
 import com.example.demo.repository.VoteRepository;
 import com.example.demo.security.SecurityUtil;
+import com.example.demo.service.BadgeService;
 import com.example.demo.service.VoteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,7 @@ public class VoteServiceImpl implements VoteService {
     private final StackUserRepository userRepository;
     private final QuestionRepository questionRepository;
     private final AnswerRepository answerRepository;
-
+    private final BadgeService badgeService;
 
     @Override
     public void voteOnQuestion(Long questionId, int value) {
@@ -74,7 +75,7 @@ public class VoteServiceImpl implements VoteService {
                     int oldValue = existingVote.getValue();
                     existingVote.setValue(value);
                     voteRepository.save(existingVote);
-                    adjustReputation(answerOwner, oldValue, value); // ✅ التعديل هنا
+                    adjustReputation(answerOwner, oldValue, value);
                 },
                 () -> {
                     Vote vote = Vote.builder()
@@ -83,9 +84,11 @@ public class VoteServiceImpl implements VoteService {
                             .answer(answer)
                             .build();
                     voteRepository.save(vote);
-                    adjustReputation(answerOwner, 0, value); // ✅ أول مرة يصوت
+                    adjustReputation(answerOwner, 0, value); //  أول مرة يصوت
                 }
         );
+
+        badgeService.checkAndAssignBadgesForAnswer(answer.getAuthor(), answer);
     }
 
     private void adjustReputation(StackUser targetUser, int oldValue, int newValue) {

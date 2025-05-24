@@ -3,6 +3,9 @@ package com.example.demo.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "stack_users")
 @Getter
@@ -29,5 +32,14 @@ public class StackUser {
 
     @Column(nullable = false)
     private int reputation = 0;
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_badges",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "badge_id")
+    )
+    private Set<Badge> badges = new HashSet<>();
+
 
 }
