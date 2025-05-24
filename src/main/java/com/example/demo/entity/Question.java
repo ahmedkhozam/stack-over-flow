@@ -42,4 +42,8 @@ public class Question {
     )
     private Set<Tag> tags = new HashSet<>();
 
+    @OneToOne(mappedBy = "question", cascade = CascadeType.ALL)
+    private Bounty bounty;
+
+
 }

@@ -3,16 +3,15 @@ package com.example.demo.service.impl;
 
 import com.example.demo.dto.AnswerDto;
 import com.example.demo.entity.Answer;
+import com.example.demo.entity.Bounty;
 import com.example.demo.entity.Question;
 import com.example.demo.entity.StackUser;
 import com.example.demo.exception.ResourceNotFoundException;
-import com.example.demo.repository.AnswerRepository;
-import com.example.demo.repository.QuestionRepository;
-import com.example.demo.repository.StackUserRepository;
-import com.example.demo.repository.VoteRepository;
+import com.example.demo.repository.*;
 import com.example.demo.security.SecurityUtil;
 import com.example.demo.service.AnswerService;
 import com.example.demo.service.NotificationService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.access.AccessDeniedException;
@@ -31,6 +30,7 @@ public class AnswerServiceImpl implements AnswerService {
     private final StackUserRepository userRepository;
     private final VoteRepository voteRepository;
     private final NotificationService notificationService;
+    private final BountyRepository bountyRepository;
 
 
     @Override
@@ -109,12 +109,15 @@ public class AnswerServiceImpl implements AnswerService {
         answerRepository.delete(answer);
     }
 
+    @Transactional
     @Override
     public void acceptAnswer(Long answerId) {
         Answer answer = answerRepository.findById(answerId)
                 .orElseThrow(() -> new ResourceNotFoundException("Answer not found"));
 
         StackUser currentUser = getCurrentUser();
+
+        Question question = answer.getQuestion();
 
         if (!answer.getQuestion().getAuthor().getEmail().equals(currentUser.getEmail())) {
             throw new AccessDeniedException("Only the question owner can accept an answer");
@@ -130,7 +133,23 @@ public class AnswerServiceImpl implements AnswerService {
         answer.setAccepted(true);
         answerRepository.save(answer);
 
-        // نضيف 15 نقطة لصاحب الإجابة
+
+        Bounty bounty = question.getBounty();
+
+        if (bounty != null) {
+            StackUser answerer = answer.getAuthor();
+
+            // أضف النقاط لصاحب الإجابة
+            answerer.setReputation(answerer.getReputation() + bounty.getAmount());
+            userRepository.save(answerer);
+
+            // احذف الـ bounty أو فك ربطها
+            bountyRepository.delete(bounty);
+            question.setBounty(null);
+            questionRepository.save(question);
+        }
+
+        /* نضيف 15 نقطة لصاحب الإجابة
         StackUser answerOwner = answer.getAuthor();
         answerOwner.setReputation(answerOwner.getReputation() + 15);
         userRepository.save(answerOwner);
@@ -142,6 +161,8 @@ public class AnswerServiceImpl implements AnswerService {
                 answer.getQuestion().getId(),
                 answer.getId()
         );
+
+         */
     }
 
     private StackUser getCurrentUser() {

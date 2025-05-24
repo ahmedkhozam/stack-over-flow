@@ -4,6 +4,7 @@ package com.example.demo.service.impl;
 import com.example.demo.dto.QuestionDto;
 import com.example.demo.dto.QuestionRequest;
 import com.example.demo.dto.QuestionResponse;
+import com.example.demo.entity.Bounty;
 import com.example.demo.entity.Question;
 import com.example.demo.entity.StackUser;
 import com.example.demo.entity.Tag;
@@ -37,19 +38,35 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public QuestionResponse createQuestion(QuestionRequest request) {
-
-
         StackUser user = getCurrentUser();
 
         Question question = Question.builder()
                 .title(request.getTitle())
                 .content(request.getContent())
-                .createdAt(LocalDateTime.now())
                 .author(user)
                 .tags(extractTagsFromNames(request.getTags()))
                 .build();
 
-        return mapToDto(questionRepository.save(question));
+        if (request.getBountyAmount() != null && request.getBountyAmount() > 0) {
+            if (user.getReputation() < request.getBountyAmount()) {
+                throw new IllegalArgumentException("Not enough reputation for bounty");
+            }
+
+            user.setReputation(user.getReputation() - request.getBountyAmount());
+            userRepository.save(user);
+
+            Bounty bounty = Bounty.builder()
+                    .amount(request.getBountyAmount())
+                    .expiry(request.getBountyExpiry())
+                    .user(user)
+                    .question(question)
+                    .build();
+
+            question.setBounty(bounty);
+        }
+
+        questionRepository.save(question);
+        return mapToDto(question);
     }
 
     @Override
@@ -74,13 +91,15 @@ public class QuestionServiceImpl implements QuestionService {
                 .title(question.getTitle())
                 .content(question.getContent())
                 .authorName(question.getAuthor().getUsername())
-                .tags(
-                        question.getTags().stream()
-                                .map(Tag::getName)
-                                .collect(Collectors.toList())
-                )
+                .tags(question.getTags().stream().map(Tag::getName).collect(Collectors.toList()))
                 .upvotes(voteRepository.countByQuestionIdAndValue(question.getId(), 1))
                 .downvotes(voteRepository.countByQuestionIdAndValue(question.getId(), -1))
+                .bountyAmount(
+                        question.getBounty() != null ? question.getBounty().getAmount() : null
+                )
+                .bountyExpiry(
+                        question.getBounty() != null ? question.getBounty().getExpiry() : null
+                )
                 .build();
     }
 
