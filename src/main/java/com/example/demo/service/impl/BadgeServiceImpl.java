@@ -26,7 +26,7 @@ public class BadgeServiceImpl implements BadgeService {
         int upvotes = voteRepository.countByAnswerIdAndValue(answer.getId(), 1);
 
         // شرط منح شارة "Nice Answer"
-        if (upvotes >= 1) {
+        if (upvotes >= 10) {
             badgeRepository.findByName("Nice Answer").ifPresent(badge -> {
                 if (!user.getBadges().contains(badge)) {
                     user.getBadges().add(badge);

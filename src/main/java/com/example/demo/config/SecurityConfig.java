@@ -36,7 +36,12 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**", "/h2-console/**").permitAll() // السماح بالتسجيل والدخول
+                        .requestMatchers("/api/auth/**",
+                                "/h2-console/**",
+                                "/api/questions",
+                                "/api/questions/**",
+                                "/api/tags/**")
+                        .permitAll() // السماح بالتسجيل والدخول
                         .anyRequest().authenticated() // الباقي يتطلب تسجيل الدخول
                 )
                 .headers(headers -> headers.frameOptions().disable()) // عشان نقدر نفتح h2-console
