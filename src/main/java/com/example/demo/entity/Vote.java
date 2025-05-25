@@ -31,4 +31,9 @@ public class Vote {
     @ManyToOne
     @JoinColumn(name = "answer_id")
     private Answer answer;
+
+    @ManyToOne
+    @JoinColumn(name = "comment_id")
+    private Comment comment;
+
 }

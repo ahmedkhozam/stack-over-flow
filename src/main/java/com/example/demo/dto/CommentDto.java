@@ -12,4 +12,8 @@ public class CommentDto {
     private Long authorId;
     private Long questionId; // optional
     private Long answerId;   // optional
+
+    private int upvotes;
+    private int downvotes;
+
 }

@@ -7,10 +7,7 @@ import com.example.demo.entity.Comment;
 import com.example.demo.entity.Question;
 import com.example.demo.entity.StackUser;
 import com.example.demo.exception.ResourceNotFoundException;
-import com.example.demo.repository.AnswerRepository;
-import com.example.demo.repository.CommentRepository;
-import com.example.demo.repository.QuestionRepository;
-import com.example.demo.repository.StackUserRepository;
+import com.example.demo.repository.*;
 import com.example.demo.security.SecurityUtil;
 import com.example.demo.service.CommentService;
 import com.example.demo.service.NotificationService;
@@ -31,6 +28,7 @@ public class CommentServiceImpl implements CommentService {
     private final QuestionRepository questionRepository;
     private final AnswerRepository answerRepository;
     private final NotificationService notificationService;
+    private final VoteRepository voteRepository;
 
     @Override
     public CommentDto addCommentToQuestion(Long questionId, CommentDto dto) {
@@ -112,6 +110,13 @@ public class CommentServiceImpl implements CommentService {
             dto.setQuestionId(comment.getQuestion().getId());
         if (comment.getAnswer() != null)
             dto.setAnswerId(comment.getAnswer().getId());
+
+        int upvotes = voteRepository.countByCommentIdAndValue(comment.getId(), 1);
+        int downvotes = voteRepository.countByCommentIdAndValue(comment.getId(), -1);
+
+        dto.setUpvotes(upvotes);
+        dto.setDownvotes(downvotes);
+
         return dto;
     }
 }

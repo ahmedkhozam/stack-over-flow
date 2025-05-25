@@ -1,19 +1,14 @@
 package com.example.demo.service.impl;
 
 
-import com.example.demo.entity.Answer;
-import com.example.demo.entity.Question;
-import com.example.demo.entity.StackUser;
-import com.example.demo.entity.Vote;
+import com.example.demo.entity.*;
 import com.example.demo.exception.ResourceNotFoundException;
-import com.example.demo.repository.AnswerRepository;
-import com.example.demo.repository.QuestionRepository;
-import com.example.demo.repository.StackUserRepository;
-import com.example.demo.repository.VoteRepository;
+import com.example.demo.repository.*;
 import com.example.demo.security.SecurityUtil;
 import com.example.demo.service.BadgeService;
 import com.example.demo.service.VoteService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -27,6 +22,7 @@ public class VoteServiceImpl implements VoteService {
     private final QuestionRepository questionRepository;
     private final AnswerRepository answerRepository;
     private final BadgeService badgeService;
+    private final CommentRepository commentRepository;
 
     @Override
     public void voteOnQuestion(Long questionId, int value) {
@@ -109,5 +105,31 @@ public class VoteServiceImpl implements VoteService {
             default -> 0;
         };
     }
+
+    @Override
+    public void voteOnComment(Long commentId, int value) {
+        String email = SecurityUtil.getCurrentUserEmail();
+        StackUser user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Comment not found"));
+
+        voteRepository.findByVoterIdAndCommentId(user.getId(), commentId).ifPresentOrElse(
+                existingVote -> {
+                    existingVote.setValue(value);
+                    voteRepository.save(existingVote);
+                },
+                () -> {
+                    Vote vote = Vote.builder()
+                            .voter(user)
+                            .value(value)
+                            .comment(comment)
+                            .build();
+                    voteRepository.save(vote);
+                }
+        );
+    }
+
 
 }

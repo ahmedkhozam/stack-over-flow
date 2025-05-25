@@ -35,4 +35,12 @@ public class VoteController {
         voteService.voteOnAnswer(id, request.getValue());
         return ResponseEntity.ok("Vote recorded for answer");
     }
+
+    @PostMapping("/comments/{commentId}")
+    public ResponseEntity<Void> voteOnComment(@PathVariable Long commentId,
+                                              @RequestParam int value) {
+        voteService.voteOnComment(commentId, value);
+        return ResponseEntity.ok().build();
+    }
+
 }
