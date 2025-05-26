@@ -15,13 +15,13 @@ public class NotificationController {
 
     private final NotificationService notificationService;
 
-    // 📥 عرض إشعارات المستخدم
+    //  عرض إشعارات المستخدم
     @GetMapping
     public ResponseEntity<List<NotificationDto>> getMyNotifications() {
         return ResponseEntity.ok(notificationService.getMyNotifications());
     }
 
-    // ✅ تعليم إشعار كمقروء
+    //  تعليم إشعار كمقروء
     @PutMapping("/{id}/read")
     public ResponseEntity<String> markAsRead(@PathVariable Long id) {
         notificationService.markAsRead(id);

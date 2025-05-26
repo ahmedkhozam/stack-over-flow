@@ -13,7 +13,7 @@ public class QuestionResponse {
     private String title;
     private String content;
     private String authorName;
-    private List<String> tags; // ✅ أسماء الوسوم
+    private List<String> tags; //  أسماء الوسوم
     private int upvotes;
     private int downvotes;
     private Integer bountyAmount;

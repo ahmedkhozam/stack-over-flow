@@ -84,7 +84,6 @@ public class QuestionServiceImpl implements QuestionService {
                 .collect(Collectors.toList());
     }
 
-
     private QuestionResponse mapToDto(Question question) {
         return QuestionResponse.builder()
                 .id(question.getId())
@@ -102,7 +101,6 @@ public class QuestionServiceImpl implements QuestionService {
                 )
                 .build();
     }
-
 
     @Override
     public QuestionResponse updateQuestion(Long id, QuestionRequest dto) {

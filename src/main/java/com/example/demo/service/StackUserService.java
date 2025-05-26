@@ -14,7 +14,7 @@ public interface StackUserService {
 
     StackUserDto updateStackUser(Long userId, StackUserDto stackUserDto); // ➡️ ميثود التحديث الجديدة
 
-    void deleteStackUser(Long userId); // ➡️ ميثود الديليت الجديدة
+    void deleteStackUser(Long userId);
 
     List<StackUserDto> getAllStackUsers();
 

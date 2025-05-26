@@ -41,7 +41,7 @@ public class DemoApplication {
 				badgeRepository.save(goodQuestion);
 				badgeRepository.save(enlightened);
 
-				System.out.println("✅ Badges seeded into the database!");
+				System.out.println("Badges seeded into the database!");
 			}
 		};
 	}

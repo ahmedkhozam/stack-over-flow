@@ -31,7 +31,7 @@ public class AuthController {
     private final StackUserDetailsService userDetailsService;
     private final JwtService jwtService;
     @Autowired
-   private final StackUserRepository stackUserRepository;
+    private final StackUserRepository stackUserRepository;
     @Autowired
     private AnswerService answerService;
 
@@ -63,12 +63,11 @@ public class AuthController {
         // جلب بيانات اليوزر
         UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
 
-        StackUser user = stackUserRepository.findByEmail(request.getEmail()).orElseThrow(()->new ResourceNotFoundException("Email doesn't exist"));
+        StackUser user = stackUserRepository.findByEmail(request.getEmail()).orElseThrow(() -> new ResourceNotFoundException("Email doesn't exist"));
         String token = jwtService.generateToken(userDetails);
         return ResponseEntity.ok(new AuthResponse(token, "Login successful", user.getReputation()));
 
     }
-
 
 
 }

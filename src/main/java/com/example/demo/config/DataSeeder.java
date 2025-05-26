@@ -92,7 +92,7 @@ public class DataSeeder {
 
             badgeRepository.saveAll(List.of(b1, b2));
 
-            System.out.println("✅ Seed data inserted successfully.");
+            System.out.println(" Seed data inserted successfully.");
         };
     }
 }
