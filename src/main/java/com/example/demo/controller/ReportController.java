@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/reports")
 @RequiredArgsConstructor
@@ -20,4 +22,10 @@ public class ReportController {
         ReportResponse response = reportService.reportContent(request);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping
+    public ResponseEntity<List<ReportResponse>> getAllReports() {
+        return ResponseEntity.ok(reportService.getAllReports());
+    }
+
 }

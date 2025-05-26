@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -61,4 +62,21 @@ public class ReportServiceImpl implements ReportService {
                 .commentId(savedReport.getComment() != null ? savedReport.getComment().getId() : null)
                 .build();
     }
+
+    @Override
+    public List<ReportResponse> getAllReports() {
+        return reportRepository.findAll().stream()
+                .map(report -> ReportResponse.builder()
+                        .id(report.getId())
+                        .reason(report.getReason())
+                        .reporterEmail(report.getReporter().getEmail())
+                        .reportedAt(report.getReportedAt())
+                        .questionId(report.getQuestion() != null ? report.getQuestion().getId() : null)
+                        .answerId(report.getAnswer() != null ? report.getAnswer().getId() : null)
+                        .commentId(report.getComment() != null ? report.getComment().getId() : null)
+                        .build()
+                ).toList();
+    }
+
+
 }
