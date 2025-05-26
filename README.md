@@ -8,13 +8,14 @@
 * [Class Diagram](#class-diagram)
 * [Activity Diagram](#activity-diagram)
 * [Sequence Diagram](#sequence-diagram)
-* [Code](#code)
 
 Stack Overflow is one of the largest online communities for developers to learn and share their knowledge. The website provides a platform for its users to ask and answer questions, and through membership and active participation, to vote questions and answers up or down. Users can edit questions and answers in a fashion similar to a [wiki](https://en.wikipedia.org/wiki/Wiki).
 
 Users of Stack Overflow can earn reputation points and badges. For example, a person is awarded ten reputation points for receiving an “up” vote on an answer and five points for the “up” vote of a question. The can also receive badges for their valued contributions. A higher reputation lets users unlock new privileges like the ability to vote, comment on, and even edit other people’s posts.
 
 ![Image](https://github.com/user-attachments/assets/7e71da4d-601d-40f8-8a46-23c820effb2f)
+
+
 ### System Requirements
 
 We will be designing a system with the following requirements:
@@ -54,6 +55,8 @@ Here are the top use cases for Stack Overflow:
 Here is the use case diagram of Stack Overflow:
 
 ![Image](https://github.com/user-attachments/assets/f1718bc3-e6e6-44bc-a0a5-beb7ba61ffaf)
+
+
     Use Case Diagram for Stack Overflow
 
 ### Class Diagram
